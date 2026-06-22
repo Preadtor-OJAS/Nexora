@@ -224,7 +224,7 @@ export default function Navbar({ checkoutStep = null }) {
                         className="relative group px-5 py-2 rounded-xl bg-surface overflow-hidden border border-border hover:border-primary/50 transition-all shadow-none hover:shadow-[0_0_20px_rgba(124,58,237,0.3)]"
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <span className="relative text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-secondary to-secondary group-hover:from-foreground group-hover:to-foreground transition-all">
+                        <span className="relative text-sm font-bold text-slate-300 dark:text-slate-300 group-hover:text-foreground transition-all">
                           Login
                         </span>
                       </motion.button>
