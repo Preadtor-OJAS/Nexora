@@ -6,7 +6,7 @@ export const getUserOrders = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return [];
     const userId = identity.subject;
 
     const orders = await ctx.db
@@ -51,7 +51,7 @@ export const getOrdersBySeller = query({
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return [];
     const sellerId = identity.subject;
 
     let q = ctx.db
@@ -283,7 +283,17 @@ export const getOrderAnalyticsBySeller = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return {
+      totalRevenue: 0,
+      revenueToday: 0,
+      revenueThisMonth: 0,
+      ordersToday: 0,
+      ordersThisMonth: 0,
+      totalOrders: 0,
+      completedOrders: 0,
+      pendingOrders: 0,
+      revenueChart: [],
+    };
     const sellerId = identity.subject;
 
     const allOrders = await ctx.db

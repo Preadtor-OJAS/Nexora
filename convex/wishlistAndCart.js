@@ -6,7 +6,7 @@ export const getWishlist = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return { productIds: [], products: [] };
     const userId = identity.subject;
 
     const wishlist = await ctx.db
@@ -68,7 +68,7 @@ export const isInWishlist = query({
   args: { productId: v.id('products') },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return false;
     const userId = identity.subject;
 
     const wishlist = await ctx.db
@@ -86,7 +86,7 @@ export const getCart = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return { items: [], total: 0 };
     const userId = identity.subject;
 
     const cart = await ctx.db

@@ -56,7 +56,7 @@ export const getCustomerByClerkId = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return null;
     const clerkId = identity.subject;
 
     return await ctx.db

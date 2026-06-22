@@ -92,7 +92,7 @@ export const getProductsBySeller = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return [];
     const sellerId = identity.subject;
 
     return await ctx.db

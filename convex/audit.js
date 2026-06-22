@@ -32,7 +32,7 @@ export const getAuditLogs = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error('Unauthenticated');
+    if (!identity) return [];
     const callerId = identity.subject;
 
     // Verify admin
@@ -42,7 +42,7 @@ export const getAuditLogs = query({
       .first();
     
     if (!caller || caller.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required to view audit logs');
+      return [];
     }
 
     let q = ctx.db.query('audit_logs').order('desc');
