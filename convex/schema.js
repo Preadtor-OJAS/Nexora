@@ -237,4 +237,17 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index('by_order', ['orderId']),
+
+  // Audit Logs table for security monitoring
+  audit_logs: defineTable({
+    action: v.string(),
+    userId: v.optional(v.string()), // clerkId
+    targetId: v.optional(v.string()),
+    details: v.string(),
+    ipAddress: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index('by_action', ['action'])
+    .index('by_user', ['userId'])
+    .index('by_created', ['createdAt']),
 });

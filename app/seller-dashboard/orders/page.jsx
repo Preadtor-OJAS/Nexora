@@ -157,7 +157,7 @@ export default function SellerOrdersPage() {
   const [search, setSearch] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const orders = useQuery(api.orders.getOrdersBySeller, user ? { sellerId: user.id, status: statusFilter || undefined } : 'skip');
+  const orders = useQuery(api.orders.getOrdersBySeller, user ? { status: statusFilter || undefined } : 'skip');
   const updateStatus = useMutation(api.orders.updateOrderStatus);
 
   const filtered = orders?.filter((o) =>

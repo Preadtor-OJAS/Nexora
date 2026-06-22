@@ -89,11 +89,15 @@ export const getAllProductsAdmin = query({
 
 // Get products by seller (seller dashboard)
 export const getProductsBySeller = query({
-  args: { sellerId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const sellerId = identity.subject;
+
     return await ctx.db
       .query('products')
-      .withIndex('by_seller', (q) => q.eq('sellerId', args.sellerId))
+      .withIndex('by_seller', (q) => q.eq('sellerId', sellerId))
       .order('desc')
       .collect();
   },

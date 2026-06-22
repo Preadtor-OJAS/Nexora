@@ -4,16 +4,19 @@ import { v } from 'convex/values';
 // Get or create customer profile
 export const getOrCreateCustomer = mutation({
   args: {
-    clerkId: v.string(),
     email: v.string(),
     firstName: v.string(),
     lastName: v.string(),
     avatar: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const clerkId = identity.subject;
+
     const existing = await ctx.db
       .query('customers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', clerkId))
       .first();
 
     const isAdmin = args.email.toLowerCase() === 'arnavkhnr@gmail.com';
@@ -39,6 +42,7 @@ export const getOrCreateCustomer = mutation({
 
     return await ctx.db.insert('customers', {
       ...args,
+      clerkId,
       role,
       totalOrders: 0,
       totalSpent: 0,
@@ -49,11 +53,15 @@ export const getOrCreateCustomer = mutation({
 
 // Get customer by clerk ID
 export const getCustomerByClerkId = query({
-  args: { clerkId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const clerkId = identity.subject;
+
     return await ctx.db
       .query('customers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', clerkId))
       .first();
   },
 });
@@ -136,7 +144,6 @@ export const getCustomerAnalytics = query({
 // Add an address for a customer
 export const addAddress = mutation({
   args: {
-    clerkId: v.string(),
     address: v.object({
       label: v.string(),
       fullName: v.string(),
@@ -151,9 +158,13 @@ export const addAddress = mutation({
     }),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const clerkId = identity.subject;
+
     const customer = await ctx.db
       .query('customers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', clerkId))
       .first();
 
     if (!customer) throw new Error('Customer not found');
@@ -196,7 +207,6 @@ export const addAddress = mutation({
 // Update an address
 export const updateAddress = mutation({
   args: {
-    clerkId: v.string(),
     addressId: v.string(),
     address: v.object({
       label: v.string(),
@@ -211,9 +221,13 @@ export const updateAddress = mutation({
     }),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const clerkId = identity.subject;
+
     const customer = await ctx.db
       .query('customers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', clerkId))
       .first();
 
     if (!customer) throw new Error('Customer not found');
@@ -232,13 +246,16 @@ export const updateAddress = mutation({
 // Delete an address
 export const deleteAddress = mutation({
   args: {
-    clerkId: v.string(),
     addressId: v.string(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const clerkId = identity.subject;
+
     const customer = await ctx.db
       .query('customers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', clerkId))
       .first();
 
     if (!customer) throw new Error('Customer not found');
@@ -263,13 +280,16 @@ export const deleteAddress = mutation({
 // Set default address
 export const setDefaultAddress = mutation({
   args: {
-    clerkId: v.string(),
     addressId: v.string(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const clerkId = identity.subject;
+
     const customer = await ctx.db
       .query('customers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', clerkId))
       .first();
 
     if (!customer) throw new Error('Customer not found');

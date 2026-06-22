@@ -3,11 +3,15 @@ import { v } from 'convex/values';
 
 // Get user's wishlist
 export const getWishlist = query({
-  args: { userId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     const wishlist = await ctx.db
       .query('wishlist')
-      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', userId))
       .first();
 
     if (!wishlist) return { productIds: [], products: [] };
@@ -25,16 +29,20 @@ export const getWishlist = query({
 
 // Toggle wishlist item
 export const toggleWishlistItem = mutation({
-  args: { userId: v.string(), productId: v.id('products') },
+  args: { productId: v.id('products') },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     const existing = await ctx.db
       .query('wishlist')
-      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', userId))
       .first();
 
     if (!existing) {
       await ctx.db.insert('wishlist', {
-        userId: args.userId,
+        userId: userId,
         productIds: [args.productId],
         updatedAt: Date.now(),
       });
@@ -57,11 +65,15 @@ export const toggleWishlistItem = mutation({
 
 // Check if product is in wishlist
 export const isInWishlist = query({
-  args: { userId: v.string(), productId: v.id('products') },
+  args: { productId: v.id('products') },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     const wishlist = await ctx.db
       .query('wishlist')
-      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', userId))
       .first();
 
     if (!wishlist) return false;
@@ -71,11 +83,15 @@ export const isInWishlist = query({
 
 // === CART ===
 export const getCart = query({
-  args: { userId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     const cart = await ctx.db
       .query('cart')
-      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', userId))
       .first();
 
     if (!cart) return { items: [], total: 0 };
@@ -101,21 +117,24 @@ export const getCart = query({
 
 export const addToCart = mutation({
   args: {
-    userId: v.string(),
     productId: v.id('products'),
     quantity: v.number(),
     selectedColor: v.optional(v.string()),
     selectedSize: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     const existing = await ctx.db
       .query('cart')
-      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', userId))
       .first();
 
     if (!existing) {
       await ctx.db.insert('cart', {
-        userId: args.userId,
+        userId: userId,
         items: [{
           productId: args.productId,
           quantity: args.quantity,
@@ -161,14 +180,17 @@ export const addToCart = mutation({
 
 export const updateCartItem = mutation({
   args: {
-    userId: v.string(),
     productId: v.id('products'),
     quantity: v.number(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     const cart = await ctx.db
       .query('cart')
-      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', userId))
       .first();
 
     if (!cart) return;
@@ -187,11 +209,15 @@ export const updateCartItem = mutation({
 });
 
 export const clearCart = mutation({
-  args: { userId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     const cart = await ctx.db
       .query('cart')
-      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', userId))
       .first();
 
     if (cart) {

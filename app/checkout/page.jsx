@@ -34,8 +34,8 @@ export default function CheckoutPage() {
   const [saveAddressForLater, setSaveAddressForLater] = useState(false);
   const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
 
-  const customer = useQuery(api.customers.getCustomerByClerkId, user ? { clerkId: user.id } : 'skip');
-  const cart = useQuery(api.wishlistAndCart.getCart, user ? { userId: user.id } : 'skip');
+  const customer = useQuery(api.customers.getCustomerByClerkId, user ? {} : 'skip');
+  const cart = useQuery(api.wishlistAndCart.getCart, user ? {} : 'skip');
   const createOrder = useMutation(api.orders.createOrder);
   const clearCart = useMutation(api.wishlistAndCart.clearCart);
   const addAddress = useMutation(api.customers.addAddress);
@@ -114,7 +114,6 @@ export default function CheckoutPage() {
         const sellerTotal = sellerSubtotal + sellerShipping + sellerTax;
 
         await createOrder({
-          userId: user.id,
           orderNumber,
           items: sellerItems.map((item) => ({
             productId: item.productId,
@@ -138,7 +137,6 @@ export default function CheckoutPage() {
       if (selectedAddressId === 'new' && saveAddressForLater) {
         try {
           await addAddress({
-            clerkId: user.id,
             address: { label: 'Saved Address', ...address }
           });
         } catch (error) {
@@ -146,7 +144,7 @@ export default function CheckoutPage() {
         }
       }
       
-      await clearCart({ userId: user.id });
+      await clearCart({});
       setOrderPlaced(true);
       
       // Wait for the animation to play, then redirect

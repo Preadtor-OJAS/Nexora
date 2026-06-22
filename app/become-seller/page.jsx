@@ -20,7 +20,7 @@ export default function BecomeSellerPage() {
   
   const sellerProfile = useQuery(
     api.sellers.getSellerByClerkId,
-    user?.id ? { clerkId: user.id } : 'skip'
+    user ? {} : 'skip'
   );
   
   const messages = useQuery(
@@ -79,7 +79,6 @@ export default function BecomeSellerPage() {
     
     try {
       await apply({
-        clerkId: user.id,
         ...formData,
       });
       // The query will auto-update and change the view to Pending

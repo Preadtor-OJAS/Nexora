@@ -3,11 +3,15 @@ import { v } from 'convex/values';
 
 // Get orders for a user
 export const getUserOrders = query({
-  args: { userId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     const orders = await ctx.db
       .query('orders')
-      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', userId))
       .order('desc')
       .collect();
     return orders;
@@ -43,13 +47,16 @@ export const getAllOrders = query({
 // Get orders by seller
 export const getOrdersBySeller = query({
   args: { 
-    sellerId: v.string(),
     status: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const sellerId = identity.subject;
+
     let q = ctx.db
       .query('orders')
-      .withIndex('by_seller', (q) => q.eq('sellerId', args.sellerId));
+      .withIndex('by_seller', (q) => q.eq('sellerId', sellerId));
 
     const orders = await q.order('desc').collect();
     
@@ -82,7 +89,6 @@ export const getOrderByNumber = query({
 // Create order
 export const createOrder = mutation({
   args: {
-    userId: v.string(),
     orderNumber: v.string(),
     items: v.array(v.object({
       productId: v.id('products'),
@@ -112,6 +118,10 @@ export const createOrder = mutation({
     sellerId: v.optional(v.string()), // Added for multi-vendor
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const userId = identity.subject;
+
     // Deduct stock for each item
     for (const item of args.items) {
       const product = await ctx.db.get(item.productId);
@@ -123,6 +133,7 @@ export const createOrder = mutation({
 
     const orderId = await ctx.db.insert('orders', {
       ...args,
+      userId,
       status: 'pending',
       paymentStatus: 'paid',
       createdAt: Date.now(),
@@ -131,7 +142,7 @@ export const createOrder = mutation({
     // Update customer stats
     const customer = await ctx.db
       .query('customers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.userId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', userId))
       .first();
 
     if (customer) {
@@ -269,11 +280,15 @@ export const getOrderAnalytics = query({
 
 // Get analytics data for a specific seller
 export const getOrderAnalyticsBySeller = query({
-  args: { sellerId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const sellerId = identity.subject;
+
     const allOrders = await ctx.db
       .query('orders')
-      .withIndex('by_seller', (q) => q.eq('sellerId', args.sellerId))
+      .withIndex('by_seller', (q) => q.eq('sellerId', sellerId))
       .collect();
       
     const now = Date.now();

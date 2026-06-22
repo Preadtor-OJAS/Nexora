@@ -18,7 +18,7 @@ export default function CartPage() {
   const { isSignedIn, user } = useUser();
   const cart = useQuery(
     api.wishlistAndCart.getCart,
-    isSignedIn ? { userId: user?.id } : 'skip'
+    isSignedIn ? {} : 'skip'
   );
   const updateItem = useMutation(api.wishlistAndCart.updateCartItem);
   const clearCart = useMutation(api.wishlistAndCart.clearCart);
@@ -45,7 +45,7 @@ export default function CartPage() {
   const total = subtotal + shipping + tax;
 
   const handleQuantity = async (productId, newQty) => {
-    await updateItem({ userId: user.id, productId, quantity: newQty });
+    await updateItem({ productId, quantity: newQty });
     if (newQty === 0) toast.success('Item removed from cart');
   };
 

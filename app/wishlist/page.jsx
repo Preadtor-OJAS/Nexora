@@ -17,7 +17,7 @@ export default function WishlistPage() {
   const { isSignedIn, user } = useUser();
   const wishlist = useQuery(
     api.wishlistAndCart.getWishlist,
-    isSignedIn ? { userId: user?.id } : 'skip'
+    isSignedIn ? {} : 'skip'
   );
   const toggleWishlist = useMutation(api.wishlistAndCart.toggleWishlistItem);
   const addToCart = useMutation(api.wishlistAndCart.addToCart);
@@ -69,7 +69,7 @@ export default function WishlistPage() {
                     </Link>
                     <button
                       onClick={async () => {
-                        await toggleWishlist({ userId: user.id, productId: p._id });
+                        await toggleWishlist({ productId: p._id });
                         toast.success('Removed from wishlist');
                       }}
                       className="absolute top-3 right-3 w-8 h-8 rounded-full glass flex items-center justify-center text-red-400 hover:bg-red-500/20 transition-all"
@@ -89,7 +89,7 @@ export default function WishlistPage() {
                     <motion.button
                       whileTap={{ scale: 0.97 }}
                       onClick={async () => {
-                        await addToCart({ userId: user.id, productId: p._id, quantity: 1 });
+                        await addToCart({ productId: p._id, quantity: 1 });
                         toast.success('Added to cart!');
                       }}
                       className="w-full py-2 rounded-lg bg-violet-600/10 dark:bg-violet-600/20 hover:bg-violet-600/20 dark:hover:bg-violet-600/30 border border-violet-500/20 dark:border-violet-500/30 text-violet-700 dark:text-violet-300 text-sm font-medium flex items-center justify-center gap-2 transition-all"

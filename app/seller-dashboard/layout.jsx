@@ -31,7 +31,7 @@ export default function SellerLayout({ children }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  const seller = useQuery(api.sellers.getSellerByClerkId, user ? { clerkId: user.id } : 'skip');
+  const seller = useQuery(api.sellers.getSellerByClerkId, user ? {} : 'skip');
   const unreadChatCount = useQuery(api.sellers.getUnreadChatCount, seller?._id ? { sellerId: seller._id, role: 'applicant' } : 'skip') || 0;
 
   useEffect(() => {

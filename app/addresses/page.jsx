@@ -19,7 +19,7 @@ export default function AddressesPage() {
     city: '', state: '', zipCode: '', country: 'US', phone: '', isDefault: false
   });
 
-  const customer = useQuery(api.customers.getCustomerByClerkId, user ? { clerkId: user.id } : 'skip');
+  const customer = useQuery(api.customers.getCustomerByClerkId, user ? {} : 'skip');
   const addAddress = useMutation(api.customers.addAddress);
   const updateAddress = useMutation(api.customers.updateAddress);
   const deleteAddress = useMutation(api.customers.deleteAddress);
@@ -51,10 +51,10 @@ export default function AddressesPage() {
     try {
       if (editingAddress) {
         const { id, isDefault, ...addressData } = formData;
-        await updateAddress({ clerkId: user.id, addressId: editingAddress.id, address: addressData });
+        await updateAddress({ addressId: editingAddress.id, address: addressData });
         toast.success('Address updated successfully');
       } else {
-        await addAddress({ clerkId: user.id, address: formData });
+        await addAddress({ address: formData });
         toast.success('Address added successfully');
       }
       handleCloseModal();
@@ -67,7 +67,7 @@ export default function AddressesPage() {
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this address?')) {
       try {
-        await deleteAddress({ clerkId: user.id, addressId: id });
+        await deleteAddress({ addressId: id });
         toast.success('Address deleted successfully');
       } catch (error) {
         toast.error('Failed to delete address');
@@ -77,7 +77,7 @@ export default function AddressesPage() {
 
   const handleSetDefault = async (id) => {
     try {
-      await setDefaultAddress({ clerkId: user.id, addressId: id });
+      await setDefaultAddress({ addressId: id });
       toast.success('Primary address updated');
     } catch (error) {
       toast.error('Failed to update primary address');

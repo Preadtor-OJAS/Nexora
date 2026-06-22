@@ -4,7 +4,6 @@ import { v } from 'convex/values';
 // Apply to become a seller
 export const apply = mutation({
   args: {
-    clerkId: v.string(),
     fullName: v.string(),
     storeName: v.string(),
     email: v.string(),
@@ -14,10 +13,14 @@ export const apply = mutation({
     storeLogo: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const clerkId = identity.subject;
+
     // Check if already applied
     const existing = await ctx.db
       .query('sellers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', clerkId))
       .first();
 
     if (existing) {
@@ -35,6 +38,7 @@ export const apply = mutation({
 
     const sellerId = await ctx.db.insert('sellers', {
       ...args,
+      clerkId,
       status: 'pending',
       createdAt: Date.now(),
     });
@@ -45,11 +49,27 @@ export const apply = mutation({
 
 // Get seller profile by clerkId
 export const getSellerByClerkId = query({
-  args: { clerkId: v.string() },
+  args: { clerkId: v.optional(v.string()) },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error('Unauthenticated');
+    const callerId = identity.subject;
+
+    let targetId = callerId;
+    if (args.clerkId && args.clerkId !== callerId) {
+      const caller = await ctx.db
+        .query('customers')
+        .withIndex('by_clerk_id', (q) => q.eq('clerkId', callerId))
+        .first();
+      if (!caller || caller.role !== 'admin') {
+        throw new Error('Unauthorized');
+      }
+      targetId = args.clerkId;
+    }
+
     return await ctx.db
       .query('sellers')
-      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', targetId))
       .first();
   },
 });
