@@ -47,7 +47,7 @@ export default function ProductDetailPage() {
   const product = useQuery(api.products.getProduct, id ? { id } : 'skip');
   const isWishlisted = useQuery(
     api.wishlistAndCart.isInWishlist,
-    isSignedIn && id ? { productId: id } : 'skip'
+    isSignedIn && id ? { userId: user.id, productId: id } : 'skip'
   );
 
   const addToCart = useMutation(api.wishlistAndCart.addToCart);
@@ -62,6 +62,7 @@ export default function ProductDetailPage() {
     if (!isSignedIn) { toast.error('Please sign in to shop'); return; }
     try {
       await addToCart({ 
+        userId: user.id,
         productId: product._id, 
         quantity, 
         selectedColor: selectedColor || undefined, 
@@ -80,6 +81,7 @@ export default function ProductDetailPage() {
     if (!isSignedIn) { toast.error('Please sign in to shop'); return; }
     try {
       await addToCart({ 
+        userId: user.id,
         productId: product._id, 
         quantity, 
         selectedColor: selectedColor || undefined, 

@@ -89,7 +89,7 @@ export default function WishlistPage() {
                     <motion.button
                       whileTap={{ scale: 0.97 }}
                       onClick={async () => {
-                        await addToCart({ productId: p._id, quantity: 1 });
+                        await addToCart({ userId: user.id, productId: p._id, quantity: 1 });
                         toast.success('Added to cart!');
                       }}
                       className="w-full py-2 rounded-lg bg-violet-600/10 dark:bg-violet-600/20 hover:bg-violet-600/20 dark:hover:bg-violet-600/30 border border-violet-500/20 dark:border-violet-500/30 text-violet-700 dark:text-violet-300 text-sm font-medium flex items-center justify-center gap-2 transition-all"

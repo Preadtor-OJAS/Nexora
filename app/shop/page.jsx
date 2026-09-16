@@ -62,7 +62,7 @@ function ProductCard({ product, view }) {
   const handleAddToCart = async (e) => {
     e.preventDefault();
     if (!isSignedIn) { toast.error('Please sign in to add to cart'); return; }
-    await addToCart({ productId: product._id, quantity: 1 });
+    await addToCart({ userId: user.id, productId: product._id, quantity: 1 });
     toast.success('Added to cart!');
   };
 
