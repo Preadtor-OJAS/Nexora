@@ -114,6 +114,7 @@ export default function CheckoutPage() {
         const sellerTotal = sellerSubtotal + sellerShipping + sellerTax;
 
         await createOrder({
+          userId: user.id,
           orderNumber,
           items: sellerItems.map((item) => ({
             productId: item.productId,
@@ -144,7 +145,7 @@ export default function CheckoutPage() {
         }
       }
       
-      await clearCart({});
+      await clearCart({ userId: user.id });
       setOrderPlaced(true);
       
       // Wait for the animation to play, then redirect

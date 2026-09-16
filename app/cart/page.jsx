@@ -45,7 +45,7 @@ export default function CartPage() {
   const total = subtotal + shipping + tax;
 
   const handleQuantity = async (productId, newQty) => {
-    await updateItem({ productId, quantity: newQty });
+    await updateItem({ userId: user.id, productId, quantity: newQty });
     if (newQty === 0) toast.success('Item removed from cart');
   };
 
