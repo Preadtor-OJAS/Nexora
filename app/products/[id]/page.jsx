@@ -47,7 +47,7 @@ export default function ProductDetailPage() {
   const product = useQuery(api.products.getProduct, id ? { id } : 'skip');
   const isWishlisted = useQuery(
     api.wishlistAndCart.isInWishlist,
-    isSignedIn && id ? { userId: user.id, productId: id } : 'skip'
+    isSignedIn && id ? { productId: id } : 'skip'
   );
 
   const addToCart = useMutation(api.wishlistAndCart.addToCart);
@@ -60,28 +60,36 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = async () => {
     if (!isSignedIn) { toast.error('Please sign in to shop'); return; }
-    await addToCart({ 
-      userId: user.id, 
-      productId: product._id, 
-      quantity, 
-      selectedColor: selectedColor || undefined, 
-      selectedSize: selectedSize || undefined 
-    });
-    setAddedToCart(true);
-    toast.success(`${product.name} added to cart!`);
-    setTimeout(() => setAddedToCart(false), 2000);
+    try {
+      await addToCart({ 
+        productId: product._id, 
+        quantity, 
+        selectedColor: selectedColor || undefined, 
+        selectedSize: selectedSize || undefined 
+      });
+      setAddedToCart(true);
+      toast.success(`${product.name} added to cart!`);
+      setTimeout(() => setAddedToCart(false), 2000);
+    } catch (err) {
+      toast.error('Failed to add to cart. Please try again.');
+      console.error(err);
+    }
   };
 
   const handleBuyNow = async () => {
     if (!isSignedIn) { toast.error('Please sign in to shop'); return; }
-    await addToCart({ 
-      userId: user.id, 
-      productId: product._id, 
-      quantity, 
-      selectedColor: selectedColor || undefined, 
-      selectedSize: selectedSize || undefined 
-    });
-    router.push('/checkout');
+    try {
+      await addToCart({ 
+        productId: product._id, 
+        quantity, 
+        selectedColor: selectedColor || undefined, 
+        selectedSize: selectedSize || undefined 
+      });
+      router.push('/checkout');
+    } catch (err) {
+      toast.error('Failed to process. Please try again.');
+      console.error(err);
+    }
   };
 
   const handleWishlist = async () => {
