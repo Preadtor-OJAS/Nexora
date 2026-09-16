@@ -56,7 +56,7 @@ function ProductCard({ product, view }) {
 
   const wishlist = useQuery(
     api.wishlistAndCart.getWishlist,
-    isSignedIn ? {} : 'skip'
+    isSignedIn && user ? { userId: user.id } : 'skip'
   );
   const isWishlisted = wishlist?.productIds?.includes(product._id);
 

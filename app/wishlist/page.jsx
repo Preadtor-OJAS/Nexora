@@ -19,7 +19,7 @@ export default function WishlistPage() {
   const [addedItems, setAddedItems] = useState({});
   const wishlist = useQuery(
     api.wishlistAndCart.getWishlist,
-    isSignedIn ? {} : 'skip'
+    isSignedIn && user ? { userId: user.id } : 'skip'
   );
   const toggleWishlist = useMutation(api.wishlistAndCart.toggleWishlistItem);
   const addToCart = useMutation(api.wishlistAndCart.addToCart);
