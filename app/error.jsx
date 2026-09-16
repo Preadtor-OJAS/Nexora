@@ -34,13 +34,13 @@ export default function GlobalError({ error, reset }) {
             Try Again
           </button>
           
-          <Link 
+          <a 
             href="/" 
             className="btn-ghost w-full py-3 flex items-center justify-center gap-2"
           >
             <Home className="w-4 h-4" />
             Go to Homepage
-          </Link>
+          </a>
         </div>
       </div>
     </div>
