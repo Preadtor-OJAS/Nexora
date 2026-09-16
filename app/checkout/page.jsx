@@ -35,7 +35,7 @@ export default function CheckoutPage() {
   const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
 
   const customer = useQuery(api.customers.getCustomerByClerkId, user ? {} : 'skip');
-  const cart = useQuery(api.wishlistAndCart.getCart, user ? {} : 'skip');
+  const cart = useQuery(api.wishlistAndCart.getCart, user ? { userId: user.id } : 'skip');
   const createOrder = useMutation(api.orders.createOrder);
   const clearCart = useMutation(api.wishlistAndCart.clearCart);
   const addAddress = useMutation(api.customers.addAddress);

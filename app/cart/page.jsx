@@ -18,7 +18,7 @@ export default function CartPage() {
   const { isSignedIn, user } = useUser();
   const cart = useQuery(
     api.wishlistAndCart.getCart,
-    isSignedIn ? {} : 'skip'
+    isSignedIn && user ? { userId: user.id } : 'skip'
   );
   const updateItem = useMutation(api.wishlistAndCart.updateCartItem);
   const clearCart = useMutation(api.wishlistAndCart.clearCart);
