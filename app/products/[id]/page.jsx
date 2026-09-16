@@ -95,7 +95,7 @@ export default function ProductDetailPage() {
 
   const handleWishlist = async () => {
     if (!user) return toast.error('Please sign in first');
-    await toggleWishlist({ productId: product._id });
+    await toggleWishlist({ userId: user.id, productId: product._id });
   };
 
   return (

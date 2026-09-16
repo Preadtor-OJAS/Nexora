@@ -71,7 +71,7 @@ function ProductCard({ product, view }) {
   const handleWishlist = async (e) => {
     e.preventDefault();
     if (!isSignedIn) { toast.error('Please sign in to add to wishlist'); return; }
-    const result = await toggleWishlist({ productId: product._id });
+    const result = await toggleWishlist({ userId: user.id, productId: product._id });
     toast.success(result.added ? 'Added to wishlist' : 'Removed from wishlist');
   };
 

@@ -71,7 +71,7 @@ export default function WishlistPage() {
                     </Link>
                     <button
                       onClick={async () => {
-                        await toggleWishlist({ productId: p._id });
+                        await toggleWishlist({ userId: user.id, productId: p._id });
                         toast.success('Removed from wishlist');
                       }}
                       className="absolute top-3 right-3 w-8 h-8 rounded-full glass flex items-center justify-center text-red-400 hover:bg-red-500/20 transition-all"
