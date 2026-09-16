@@ -5,8 +5,9 @@ import { useQuery, useMutation } from '@/lib/convex-hooks';
 import { api } from '@/convex/_generated/api';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
+import { Heart, ShoppingBag, Trash2, Check } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { formatCurrency } from '@/lib/utils';
@@ -15,6 +16,7 @@ import SafeImage from '@/components/SafeImage';
 
 export default function WishlistPage() {
   const { isSignedIn, user } = useUser();
+  const [addedItems, setAddedItems] = useState({});
   const wishlist = useQuery(
     api.wishlistAndCart.getWishlist,
     isSignedIn ? {} : 'skip'
@@ -87,14 +89,16 @@ export default function WishlistPage() {
                       {p.comparePrice && <span className="text-xs text-muted line-through">{formatCurrency(p.comparePrice)}</span>}
                     </div>
                     <motion.button
-                      whileTap={{ scale: 0.97 }}
+                      whileTap={!addedItems[p._id] ? { scale: 0.97 } : {}}
+                      disabled={addedItems[p._id]}
                       onClick={async () => {
                         await addToCart({ userId: user.id, productId: p._id, quantity: 1 });
+                        setAddedItems(prev => ({ ...prev, [p._id]: true }));
                         toast.success('Added to cart!');
                       }}
-                      className="w-full py-2 rounded-lg bg-violet-600/10 dark:bg-violet-600/20 hover:bg-violet-600/20 dark:hover:bg-violet-600/30 border border-violet-500/20 dark:border-violet-500/30 text-violet-700 dark:text-violet-300 text-sm font-medium flex items-center justify-center gap-2 transition-all"
+                      className={`w-full py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all ${addedItems[p._id] ? 'bg-emerald-600/10 text-emerald-500 border border-emerald-500/20 cursor-not-allowed' : 'bg-violet-600/10 dark:bg-violet-600/20 hover:bg-violet-600/20 dark:hover:bg-violet-600/30 border border-violet-500/20 dark:border-violet-500/30 text-violet-700 dark:text-violet-300'}`}
                     >
-                      <ShoppingBag className="w-3.5 h-3.5" />Add to Cart
+                      {addedItems[p._id] ? <><Check className="w-3.5 h-3.5" />Added</> : <><ShoppingBag className="w-3.5 h-3.5" />Add to Cart</>}
                     </motion.button>
                   </div>
                 </motion.div>

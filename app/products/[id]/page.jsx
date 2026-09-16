@@ -70,7 +70,6 @@ export default function ProductDetailPage() {
       });
       setAddedToCart(true);
       toast.success(`${product.name} added to cart!`);
-      setTimeout(() => setAddedToCart(false), 2000);
     } catch (err) {
       toast.error('Failed to add to cart. Please try again.');
       console.error(err);
@@ -259,8 +258,8 @@ export default function ProductDetailPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={handleAddToCart}
-                    disabled={product.stock === 0}
-                    className={`flex-1 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${product.stock === 0 ? 'bg-surface text-muted cursor-not-allowed' : addedToCart ? 'bg-emerald-600 text-foreground' : 'glass border border-border hover:border-violet-500/50 hover:bg-surface text-slate-200 text-base'}`}
+                    disabled={product.stock === 0 || addedToCart}
+                    className={`flex-1 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${product.stock === 0 ? 'bg-surface text-muted cursor-not-allowed' : addedToCart ? 'bg-emerald-600 text-foreground cursor-not-allowed opacity-90' : 'glass border border-border hover:border-violet-500/50 hover:bg-surface text-slate-200 text-base'}`}
                   >
                     {addedToCart ? <><Check className="w-5 h-5" />Added!</> : <><ShoppingBag className="w-5 h-5" />Add to Cart</>}
                   </motion.button>

@@ -7,7 +7,7 @@ import { api } from '@/convex/_generated/api';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, SlidersHorizontal, Star, Heart, ShoppingBag, Grid3X3, List, X, ChevronDown, Zap, ChevronRight, Package } from 'lucide-react';
+import { Search, SlidersHorizontal, Star, Heart, ShoppingBag, Grid3X3, List, X, ChevronDown, Zap, ChevronRight, Package, Check } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import TiltCard from '@/components/animations/TiltCard';
@@ -52,6 +52,7 @@ function ProductCard({ product, view }) {
   const addToCart = useMutation(api.wishlistAndCart.addToCart);
   const toggleWishlist = useMutation(api.wishlistAndCart.toggleWishlistItem);
   const discount = calcDiscount(product.comparePrice, product.price);
+  const [addedToCart, setAddedToCart] = useState(false);
 
   const wishlist = useQuery(
     api.wishlistAndCart.getWishlist,
@@ -63,6 +64,7 @@ function ProductCard({ product, view }) {
     e.preventDefault();
     if (!isSignedIn) { toast.error('Please sign in to add to cart'); return; }
     await addToCart({ userId: user.id, productId: product._id, quantity: 1 });
+    setAddedToCart(true);
     toast.success('Added to cart!');
   };
 
@@ -106,8 +108,8 @@ function ProductCard({ product, view }) {
           <motion.button whileTap={{ scale: 0.9 }} onClick={handleWishlist} className={`w-8 h-8 rounded-lg glass flex items-center justify-center transition-colors ${isWishlisted ? 'text-red-500 hover:text-red-400' : 'text-muted hover:text-red-400'}`}>
             <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-current' : ''}`} />
           </motion.button>
-          <motion.button whileTap={{ scale: 0.9 }} onClick={handleAddToCart} className="w-8 h-8 rounded-lg bg-violet-600/80 hover:bg-violet-600 flex items-center justify-center text-foreground transition-colors">
-            <ShoppingBag className="w-3.5 h-3.5" />
+          <motion.button whileTap={!addedToCart ? { scale: 0.9 } : {}} onClick={handleAddToCart} disabled={addedToCart} className={`w-8 h-8 rounded-lg flex items-center justify-center text-foreground transition-colors ${addedToCart ? 'bg-emerald-600 cursor-not-allowed' : 'bg-violet-600/80 hover:bg-violet-600'}`}>
+            {addedToCart ? <Check className="w-3.5 h-3.5" /> : <ShoppingBag className="w-3.5 h-3.5" />}
           </motion.button>
         </div>
       </motion.div>
@@ -136,9 +138,8 @@ function ProductCard({ product, view }) {
             <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
           </motion.button>
           <div className="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-            <button onClick={handleAddToCart} className="w-full py-2 rounded-lg bg-white/90 text-slate-900 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-white transition-colors">
-              <ShoppingBag className="w-4 h-4" />
-              Add to Cart
+            <button onClick={handleAddToCart} disabled={addedToCart} className={`w-full py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${addedToCart ? 'bg-emerald-600 text-foreground cursor-not-allowed' : 'bg-white/90 text-slate-900 hover:bg-white'}`}>
+              {addedToCart ? <><Check className="w-4 h-4" /> Added</> : <><ShoppingBag className="w-4 h-4" /> Add to Cart</>}
             </button>
           </div>
         </div>
