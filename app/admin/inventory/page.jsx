@@ -45,7 +45,7 @@ export default function AdminInventoryPage() {
   });
 
   const handleSaveStock = async (product, stock, threshold) => {
-    await updateProduct({ id: product._id, stock, lowStockThreshold: threshold });
+    await updateProduct({ id: product._id, stock });
     toast.success(`Stock updated to ${stock}`);
     setEditingId(null);
   };

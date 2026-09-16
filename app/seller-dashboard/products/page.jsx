@@ -119,11 +119,12 @@ export default function SellerProductsPage() {
 
   const handleSaveProduct = async (data) => {
     try {
+      const { _id, _creationTime, rating, reviewCount, sales, lowStockThreshold, sku, slug, sellerId, ...cleanData } = data;
       if (editingProduct) {
-        await updateProduct({ id: editingProduct._id, sellerId: user.id, ...data });
+        await updateProduct({ id: editingProduct._id, sellerId: user.id, ...cleanData });
         toast.success('Product updated successfully');
       } else {
-        await createProduct({ ...data, sellerId: user.id });
+        await createProduct({ ...cleanData, sellerId: user.id });
         toast.success('Product created successfully');
       }
       setIsModalOpen(false);

@@ -119,11 +119,12 @@ export default function AdminProductsPage() {
 
   const handleSave = async (data) => {
     try {
+      const { _id, _creationTime, rating, reviewCount, sales, lowStockThreshold, sku, slug, sellerId, ...cleanData } = data;
       if (modalProduct?._id) {
-        await updateProduct({ id: modalProduct._id, ...data });
+        await updateProduct({ id: modalProduct._id, ...cleanData });
         toast.success('Product updated!');
       } else {
-        await createProduct(data);
+        await createProduct(cleanData);
         toast.success('Product created!');
       }
       setShowModal(false);
