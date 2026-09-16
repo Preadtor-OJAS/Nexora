@@ -19,7 +19,7 @@ export default function AddressesPage() {
     city: '', state: '', zipCode: '', country: 'US', phone: '', isDefault: false
   });
 
-  const customer = useQuery(api.customers.getCustomerByClerkId, user ? {} : 'skip');
+  const customer = useQuery(api.customers.getCustomerByClerkId, user ? { clerkId: user.id } : 'skip');
   const addAddress = useMutation(api.customers.addAddress);
   const updateAddress = useMutation(api.customers.updateAddress);
   const deleteAddress = useMutation(api.customers.deleteAddress);
