@@ -97,7 +97,7 @@ const COLORS = ['#7C3AED', '#06B6D4', '#10B981', '#F59E0B', '#EF4444'];
 
 export default function SellerAnalyticsPage() {
   const { user } = useUser();
-  const analytics = useQuery(api.orders.getOrderAnalyticsBySeller, user ? { sellerId: user.id } : 'skip');
+  const analytics = useQuery(api.orders.getOrderAnalyticsBySeller, user ? {} : 'skip');
 
   const categoryData = [
     { name: 'Electronics', value: 400 },

@@ -105,7 +105,7 @@ function ProductModal({ product, onClose, onSave }) {
 
 export default function SellerProductsPage() {
   const { user } = useUser();
-  const products = useQuery(api.products.getProductsBySeller, user ? { sellerId: user.id } : 'skip');
+  const products = useQuery(api.products.getProductsBySeller, user ? {} : 'skip');
   const createProduct = useMutation(api.products.createProduct);
   const updateProduct = useMutation(api.products.updateProduct);
   const deleteProduct = useMutation(api.products.deleteProduct);

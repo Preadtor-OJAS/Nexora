@@ -89,9 +89,9 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function SellerDashboardPage() {
   const { user, isLoaded } = useUser();
-  const analytics = useQuery(api.orders.getOrderAnalyticsBySeller, user ? { sellerId: user.id } : 'skip');
-  const products = useQuery(api.products.getProductsBySeller, user ? { sellerId: user.id } : 'skip');
-  const recentOrders = useQuery(api.orders.getOrdersBySeller, user ? { sellerId: user.id } : 'skip');
+  const analytics = useQuery(api.orders.getOrderAnalyticsBySeller, user ? {} : 'skip');
+  const products = useQuery(api.products.getProductsBySeller, user ? {} : 'skip');
+  const recentOrders = useQuery(api.orders.getOrdersBySeller, user ? {} : 'skip');
 
   if (!isLoaded || analytics === undefined || products === undefined || recentOrders === undefined) {
     return (
