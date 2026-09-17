@@ -119,7 +119,7 @@ export default function SellerProductsPage() {
 
   const handleSaveProduct = async (data) => {
     try {
-      const { _id, _creationTime, rating, reviewCount, sales, lowStockThreshold, sku, slug, sellerId, ...cleanData } = data;
+      const { _id, _creationTime, rating, reviewCount, sales, ...cleanData } = data;
       if (editingProduct) {
         await updateProduct({ id: editingProduct._id, sellerId: user.id, ...cleanData });
         toast.success('Product updated successfully');
