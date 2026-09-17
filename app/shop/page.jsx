@@ -56,14 +56,14 @@ function ProductCard({ product, view }) {
 
   const wishlist = useQuery(
     api.wishlistAndCart.getWishlist,
-    isSignedIn && user ? { userId: user.id } : 'skip'
+    isSignedIn && user ? {} : 'skip'
   );
   const isWishlisted = wishlist?.productIds?.includes(product._id);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     if (!isSignedIn) { toast.error('Please sign in to add to cart'); return; }
-    await addToCart({ userId: user.id, productId: product._id, quantity: 1 });
+    await addToCart({ productId: product._id, quantity: 1 });
     setAddedToCart(true);
     toast.success('Added to cart!');
   };
@@ -71,7 +71,7 @@ function ProductCard({ product, view }) {
   const handleWishlist = async (e) => {
     e.preventDefault();
     if (!isSignedIn) { toast.error('Please sign in to add to wishlist'); return; }
-    const result = await toggleWishlist({ userId: user.id, productId: product._id });
+    const result = await toggleWishlist({ productId: product._id });
     toast.success(result.added ? 'Added to wishlist' : 'Removed from wishlist');
   };
 

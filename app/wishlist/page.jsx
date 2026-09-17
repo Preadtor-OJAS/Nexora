@@ -19,7 +19,7 @@ export default function WishlistPage() {
   const [addedItems, setAddedItems] = useState({});
   const wishlist = useQuery(
     api.wishlistAndCart.getWishlist,
-    isSignedIn && user ? { userId: user.id } : 'skip'
+    isSignedIn && user ? {} : 'skip'
   );
   const toggleWishlist = useMutation(api.wishlistAndCart.toggleWishlistItem);
   const addToCart = useMutation(api.wishlistAndCart.addToCart);
@@ -71,7 +71,7 @@ export default function WishlistPage() {
                     </Link>
                     <button
                       onClick={async () => {
-                        await toggleWishlist({ userId: user.id, productId: p._id });
+                        await toggleWishlist({ productId: p._id });
                         toast.success('Removed from wishlist');
                       }}
                       className="absolute top-3 right-3 w-8 h-8 rounded-full glass flex items-center justify-center text-red-400 hover:bg-red-500/20 transition-all"
@@ -92,7 +92,7 @@ export default function WishlistPage() {
                       whileTap={!addedItems[p._id] ? { scale: 0.97 } : {}}
                       disabled={addedItems[p._id]}
                       onClick={async () => {
-                        await addToCart({ userId: user.id, productId: p._id, quantity: 1 });
+                        await addToCart({ productId: p._id, quantity: 1 });
                         setAddedItems(prev => ({ ...prev, [p._id]: true }));
                         toast.success('Added to cart!');
                       }}

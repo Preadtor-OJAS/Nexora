@@ -121,7 +121,7 @@ export default function OrdersPage() {
   
   const orders = useQuery(
     api.orders.getUserOrders,
-    user ? { userId: user.id } : 'skip'
+    user ? {} : 'skip'
   );
 
   const filteredOrders = orders?.filter(order => {

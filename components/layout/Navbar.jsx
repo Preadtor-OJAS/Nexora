@@ -56,12 +56,12 @@ export default function Navbar({ checkoutStep = null }) {
 
   const cart = useQuery(
     api.wishlistAndCart.getCart,
-    isSignedIn && user ? { userId: user.id } : 'skip'
+    isSignedIn && user ? {} : 'skip'
   );
 
   const wishlist = useQuery(
     api.wishlistAndCart.getWishlist,
-    isSignedIn && user ? { userId: user.id } : 'skip'
+    isSignedIn && user ? {} : 'skip'
   );
 
   const cartCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
