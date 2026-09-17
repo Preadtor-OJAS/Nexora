@@ -12,7 +12,6 @@ export function SyncUser() {
   useEffect(() => {
     if (isLoaded && isSignedIn && user) {
       getOrCreateCustomer({
-        clerkId: user.id,
         email: user.primaryEmailAddress?.emailAddress || 'no-email@example.com',
         firstName: user.firstName || 'User',
         lastName: user.lastName || '',
